@@ -2,8 +2,10 @@
  * from Monkey's Audio SDK with permission
  */
 
-#ifndef _MSM_AUDIO_APE_H
-#define _MSM_AUDIO_APE_H
+#ifndef _UAPI_MSM_AUDIO_APE_H
+#define _UAPI_MSM_AUDIO_APE_H
+
+#include <linux/types.h>
 
 #define AUDIO_GET_APE_CONFIG  _IOR(AUDIO_IOCTL_MAGIC, \
 	  (AUDIO_MAX_COMMON_IOCTL_NUM+0), struct msm_audio_ape_config)
@@ -11,16 +13,16 @@
 	  (AUDIO_MAX_COMMON_IOCTL_NUM+1), struct msm_audio_ape_config)
 
 struct msm_audio_ape_config {
-	uint16_t compatibleVersion;
-	uint16_t compressionLevel;
-	uint32_t formatFlags;
-	uint32_t blocksPerFrame;
-	uint32_t finalFrameBlocks;
-	uint32_t totalFrames;
-	uint16_t bitsPerSample;
-	uint16_t numChannels;
-	uint32_t sampleRate;
-	uint32_t seekTablePresent;
+	__u16 compatibleVersion;
+	__u16 compressionLevel;
+	__u32 formatFlags;
+	__u32 blocksPerFrame;
+	__u32 finalFrameBlocks;
+	__u32 totalFrames;
+	__u16 bitsPerSample;
+	__u16 numChannels;
+	__u32 sampleRate;
+	__u32 seekTablePresent;
 };
 
-#endif /* _MSM_AUDIO_APE_H */
+#endif /* _UAPI_MSM_AUDIO_APE_H */

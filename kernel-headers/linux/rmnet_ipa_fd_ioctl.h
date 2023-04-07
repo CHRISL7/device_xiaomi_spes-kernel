@@ -1,6 +1,6 @@
-/* SPDX-License-Identifier: GPL-2.0 WITH Linux-syscall-note */
+/* SPDX-License-Identifier: GPL-2.0-only WITH Linux-syscall-note */
 /*
- * Copyright (c) 2013-2019, The Linux Foundation. All rights reserved.
+ * Copyright (c) 2013-2021, The Linux Foundation. All rights reserved.
  */
 
 #ifndef _RMNET_IPA_FD_IOCTL_H
@@ -35,6 +35,9 @@
 #define WAN_IOCTL_SEND_LAN_CLIENT_MSG        17
 #define WAN_IOCTL_ADD_OFFLOAD_CONNECTION     18
 #define WAN_IOCTL_RMV_OFFLOAD_CONNECTION     19
+#define WAN_IOCTL_GET_WAN_MTU                20
+#define WAN_IOCTL_SET_DATA_QUOTA_WARNING     21
+#define WAN_IOCTL_NOTIFY_NAT_MOVE_RES        22
 
 /* User space may not have this defined. */
 #ifndef IFNAMSIZ
@@ -73,6 +76,33 @@ struct wan_ioctl_set_data_quota {
 	char     interface_name[IFNAMSIZ];
 	uint64_t quota_mbytes;
 	uint8_t  set_quota;
+};
+
+/**
+ * struct wan_ioctl_set_data_quota_warning - structure used for
+ *                                   WAN_IOCTL_SET_DATA_QUOTA_WARNING IOCTL.
+ *
+ * @interface_name:  Name of the interface on which to set the quota or
+ *                   warning.
+ * @quota_mbytes:    Quota (in Mbytes) for the above interface.
+ * @set_quota:       Indicate whether to set the quota/warning (use 1) or
+ *                   unset the quota/warning.
+ * @set_warning:     Indicate whether to set the quota/warning (use 1) or
+  * 				  unset the quota/warning.
+ * @warning_mbytes:    Warning (in Mbytes) for the above interface.
+ * @set_warning:       Indicate whether to set the warning (use 1) or
+ *                   unset the warning.
+ *
+ * The structure to be used by the user space in order to request
+ * a quota to be set on a specific interface (by specifying its name).
+ */
+struct wan_ioctl_set_data_quota_warning {
+	char     interface_name[IFNAMSIZ];
+	uint64_t quota_mbytes;
+	uint8_t  set_quota;
+	uint8_t  set_warning;
+	uint16_t padding2;
+	uint64_t warning_mbytes;
 };
 
 struct wan_ioctl_set_tether_client_pipe {
@@ -130,6 +160,9 @@ struct wan_ioctl_query_dl_filter_stats {
 
 struct wan_ioctl_notify_wan_state {
 	uint8_t up;
+	/* Name of the upstream interface */
+	char upstreamIface[IFNAMSIZ];
+#define WAN_IOCTL_NOTIFY_WAN_INTF_NAME WAN_IOCTL_NOTIFY_WAN_INTF_NAME
 };
 struct wan_ioctl_send_lan_client_msg {
 	/* Lan client info. */
@@ -153,6 +186,10 @@ struct wan_ioctl_lan_client_info {
 	uint8_t hdr_len;
 	/* Source pipe of the lan client. */
 	enum ipa_client_type ul_src_pipe;
+	/* Counter indices for h/w fnr stats */
+#define IPA_HW_FNR_STATS
+	uint8_t ul_cnt_idx;
+	uint8_t dl_cnt_idx;
 };
 
 struct wan_ioctl_per_client_info {
@@ -261,4 +298,16 @@ struct wan_ioctl_query_per_client_stats {
 #define WAN_IOC_RMV_OFFLOAD_CONNECTION _IOWR(WAN_IOC_MAGIC, \
 		WAN_IOCTL_RMV_OFFLOAD_CONNECTION, \
 		struct ipa_remove_offload_connection_req_msg_v01 *)
+
+#define WAN_IOC_GET_WAN_MTU _IOWR(WAN_IOC_MAGIC, \
+		WAN_IOCTL_GET_WAN_MTU, \
+		struct ipa_mtu_info *)
+
+#define WAN_IOC_SET_DATA_QUOTA_WARNING _IOWR(WAN_IOC_MAGIC, \
+		WAN_IOCTL_SET_DATA_QUOTA_WARNING, \
+		struct wan_ioctl_set_data_quota_warning)
+
+#define WAN_IOC_NOTIFY_NAT_MOVE_RES _IOWR(WAN_IOC_MAGIC, \
+	WAN_IOCTL_NOTIFY_NAT_MOVE_RES, \
+	bool)
 #endif /* _RMNET_IPA_FD_IOCTL_H */

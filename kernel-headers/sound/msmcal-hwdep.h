@@ -1,6 +1,8 @@
 #ifndef _CALIB_HWDEP_H
 #define _CALIB_HWDEP_H
 
+#include <linux/types.h>
+
 #define WCD9XXX_CODEC_HWDEP_NODE    1000
 #define AQT1000_CODEC_HWDEP_NODE    1001
 #define Q6AFE_HWDEP_NODE    1002
@@ -15,7 +17,7 @@ enum wcd_cal_type {
 
 struct wcdcal_ioctl_buffer {
 	__u32 size;
-	__u8 *buffer;
+	__u8 __user *buffer;
 	enum wcd_cal_type cal_type;
 };
 
@@ -30,7 +32,7 @@ enum q6afe_cal_type {
 
 struct q6afecal_ioctl_buffer {
 	__u32 size;
-	__u8 *buffer;
+	__u8 __user *buffer;
 	enum q6afe_cal_type cal_type;
 };
 
